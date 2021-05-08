@@ -1,0 +1,17 @@
+/.gradle/
+/.idea/
+/api/build/
+/api/out/
+/api/run/
+/bom/build/
+/key/build/
+/key/out/
+/nbt/build/
+/nbt/out/
+/run/
+/serializer-configurate*/build/
+/serializer-configurate*/out/
+/text-serializer-*/build/
+/text-serializer-*/out/
+/*.iml
+/build/

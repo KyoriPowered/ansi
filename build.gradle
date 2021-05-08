@@ -1,0 +1,67 @@
+buildscript {
+    ext {
+        indraVersion = "2.0.2"
+    }
+}
+
+plugins {
+    id "net.kyori.indra" version "$indraVersion"
+    id "net.kyori.indra.license-header" version "$indraVersion"
+    id "net.kyori.indra.publishing.sonatype" version "$indraVersion"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnlyApi "org.checkerframework:checker-qual:3.12.0"
+}
+
+sourceSets {
+    main {
+        multirelease {
+            alternateVersions(9)
+            moduleName "net.kyori.ansi"
+        }
+    }
+}
+
+indra {
+    github("KyoriPowered", "ansi") {
+        ci(true)
+    }
+    mitLicense()
+
+    javaVersions {
+        testWith(8, 11, 16)
+    }
+
+    configurePublications {
+        pom {
+            developers {
+                developer {
+                    id = "kashike"
+                    timezone = "America/Vancouver"
+                }
+
+                developer {
+                    id = "lucko"
+                    name = "Luck"
+                    url = "https://lucko.me"
+                    email = "git@lucko.me"
+                }
+
+                developer {
+                    id = "zml"
+                    name = "zml"
+                    timezone = "America/Vancouver"
+                }
+
+                developer {
+                    id = "Electroid"
+                }
+            }
+        }
+    }
+}
