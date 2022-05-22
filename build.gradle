@@ -4,12 +4,19 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
+group = "net.kyori"
+version = "1.0.0-SNAPSHOT"
+description = "A library to render Minecraft chat component styles to ANSI control codes"
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     compileOnlyApi libs.jetbrainsAnnotations
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.api
+    testRuntimeOnly libs.junit.engine
 }
 
 spotless {

@@ -25,111 +25,178 @@ package net.kyori.ansi;
 
 import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> {
-  private static final int MAX_DEPTH = 32;
+  private static final int MAX_DEPTH = 128;
   private final StyleOps<S> ops;
+  private final ColorLevel color;
 
-  private final Style lastWritten = new Style();
   protected StringBuilder builder;
   @SuppressWarnings("unchecked")
-  private S[] styles = (S[]) new Object[8];
+  private final Frame active = new Frame();
+  private Frame[] styles = new Frame[8];
   private int head = -1;
+  private boolean stylePending;
 
-  protected ANSIComponentRendererImpl(final StyleOps<S> ops) {
+  protected ANSIComponentRendererImpl(final StyleOps<S> ops, final ColorLevel colorLevel) {
     this.ops = requireNonNull(ops, "ops");
+    this.color = requireNonNull(colorLevel, "colorLevel");
+  }
+
+  private @Nullable Frame peek() {
+    if (this.head < 0) return null;
+
+    return this.styles[this.head];
+  }
+
+  private Frame push() {
+    final int idx = ++this.head;
+    if (idx >= MAX_DEPTH) {
+      throw new IllegalStateException("Too many styles! Maximum depth of " + MAX_DEPTH + " exceeded");
+    } else if (idx >= this.styles.length) {
+      this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
+    }
+
+    Frame frame = this.styles[idx];
+    if (frame == null) {
+      frame = this.styles[idx] = new Frame();
+    }
+    if (idx > 0) {
+      frame.set(this.styles[idx - 1]);
+    } else {
+      frame.clear();
+    }
+
+    return frame;
+  }
+
+  private Frame pop() {
+    // Pop style onto stack, update pointer, validate balance
+    if (this.head < 0) {
+      throw new IllegalStateException("Tried to pop beyond what was pushed!");
+    }
+
+    return this.styles[this.head--];
   }
 
   @Override
   public @NotNull ANSIComponentRenderer<S> pushStyle(final @NotNull S style) {
-    final int idx = ++this.head;
-    if(idx >= this.styles.length) {
-      this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
-    }
-    // Push new style onto stack, growing if necessary
-    // Calculate all changes between old and new, and write those ansi sequences out
-    if(idx == 0) {
-      this.styles[idx] = style;
-    } else {
-      this.styles[idx] = this.ops.merge(this.styles[this.head - 1], style);
-    }
-
+    final Frame frame = this.push();
+    frame.apply(style, this.ops);
+    this.stylePending = true;
     return this;
   }
 
   @Override
   public @NotNull ANSIComponentRenderer<S> text(final @NotNull String text) {
     // Compute style difference
+    this.appendUpdatedStyle();
     // Then append the string
     this.builder.append(text);
     return this;
   }
 
   private void appendUpdatedStyle() {
-
+    if (this.stylePending) {
+      final Frame style = this.peek();
+      this.printDifferences(this.active, style);
+      if (style == null) {
+        this.active.clear();
+      } else {
+        this.active.set(style);
+      }
+      this.stylePending = false;
+    }
   }
 
   @Override
   public @NotNull ANSIComponentRenderer<S> popStyle(final @NotNull S style) {
-    // Pop style onto stack, update pointer, validate balance
-    if(this.head-- < 0) {
-      throw new IllegalStateException("Tried to pop beyond what was pushed!");
-    }
-    // Calculate all changes between old and new, and write those ansi sequences out
+    this.pop();
+    this.stylePending = true;
     return this;
-  }
-
-  private void printDifferences(final S oldStyle, final S newStyle) {
-    final StringBuilder builder = this.builder;
-    // Write ansi sequences
-  }
-
-  static final class Style {
-
-    private int color;
-    private boolean bold;
-    private boolean italics;
-    private boolean obfuscated;
-    private boolean strikethrough;
-    private boolean underlined;
-
-    Style() {
-    }
-
-    <S> void update(final @NotNull S that, final @NotNull StyleOps<S> ops) {
-      this.color = ops.color(that);
-      this.bold = ops.bold(that);
-      this.italics = ops.italics(that);
-      this.obfuscated = ops.obfuscated(that);
-      this.strikethrough = ops.strikethrough(that);
-      this.underlined = ops.underlined(that);
-    }
-
-    public void clear() {
-      this.color = -1;
-      this.bold = false;
-      this.italics = false;
-      this.obfuscated = false;
-      this.strikethrough = false;
-      this.underlined = false;
-    }
-
   }
 
   @Override
   public @NotNull ANSIComponentRenderer<S> complete() {
-    if(this.head != -1) {
+    if (this.head != -1) {
       throw new IllegalStateException("Ended build with unbalanced stack. Remaining items are: " + Arrays.toString(Arrays.copyOf(this.styles, this.head + 1)));
     }
+    this.appendUpdatedStyle();
     return this;
   }
 
-  static final class ToStringBuilder<S> extends ANSIComponentRendererImpl<S> implements ANSIComponentRenderer.ToStringBuilder<S> {
+  private void printDifferences(final @NotNull Frame active, final @Nullable Frame target) {
+    final StringBuilder builder = this.builder;
+    if (target == null) {
+      Formats.emit(Formats.reset(), builder);
+    } else if (active.style != target.style || target.color == StyleOps.COLOR_UNSET) {
+      // reset, emit everything
+      if (active.style != 0) Formats.emit(Formats.reset(), builder);
+      if ((target.style & Frame.BOLD) != 0) Formats.emit(Formats.bold(true), builder);
+      if ((target.style & Frame.ITALICS) != 0) Formats.emit(Formats.italics(true), builder);
+      if ((target.style & Frame.OBFUSCATED) != 0) Formats.emit(Formats.obfuscated(true), builder);
+      if ((target.style & Frame.STRIKETHROUGH) != 0) Formats.emit(Formats.strikethrough(true), builder);
+      if ((target.style & Frame.UNDERLINED) != 0) Formats.emit(Formats.underlined(true), builder);
+      if (target.color != StyleOps.COLOR_UNSET) Formats.emit(this.color.determineEscape(target.color), builder);
+    } else if (active.color != target.color) {
+      Formats.emit(this.color.determineEscape(target.color), builder);
+    }
+  }
 
-    ToStringBuilder(final StyleOps<S> ops) {
-      super(ops);
+  static final class Frame {
+    static final int BOLD = 1;
+    static final int ITALICS = 1 << 1;
+    static final int OBFUSCATED = 1 << 2;
+    static final int STRIKETHROUGH = 1 << 3;
+    static final int UNDERLINED = 1 << 4;
+
+    int color;
+    int style;
+
+    Frame() {
+    }
+
+    void set(final @NotNull Frame other) {
+      this.color = other.color;
+      this.style = other.style;
+    }
+
+    <S> void apply(final @NotNull S that, final @NotNull StyleOps<S> ops) {
+      final int color = ops.color(that);
+      if (color != StyleOps.COLOR_UNSET) this.color = ops.color(that);
+
+      this.apply(BOLD, ops.bold(that));
+      this.apply(ITALICS, ops.italics(that));
+      this.apply(OBFUSCATED, ops.obfuscated(that));
+      this.apply(STRIKETHROUGH, ops.strikethrough(that));
+      this.apply(UNDERLINED, ops.underlined(that));
+    }
+
+    private void apply(final int flag, final StyleOps.State state) {
+      switch (state) {
+        case TRUE:
+          this.style |= flag;
+          break;
+        case FALSE:
+          this.style &= ~flag;
+          break;
+        case UNSET: // fall-through
+        default: // no-op
+      }
+    }
+
+    public void clear() {
+      this.color = -1;
+      this.style = 0;
+    }
+  }
+
+  static final class ToStringBuilder<S> extends ANSIComponentRendererImpl<S> implements ANSIComponentRenderer.ToStringBuilder<S> {
+    ToStringBuilder(final StyleOps<S> ops, final ColorLevel colorLevel) {
+      super(ops, colorLevel);
     }
 
     @Override
@@ -147,9 +214,8 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   static final class ToString<S> extends ANSIComponentRendererImpl<S> implements ANSIComponentRenderer.ToString<S> {
-
-    ToString(final StyleOps<S> ops) {
-      super(ops);
+    ToString(final StyleOps<S> ops, final ColorLevel colorLevel) {
+      super(ops, colorLevel);
       this.builder = new StringBuilder();
     }
 

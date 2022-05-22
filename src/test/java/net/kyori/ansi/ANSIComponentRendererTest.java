@@ -21,13 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.ansi;
 
-/**
- * A library for representing Minecraft chat component style as ANSI control codes.
- *
- * @see net.kyori.ansi.ANSIComponentRenderer
- */
-module net.kyori.ansi {
-  exports net.kyori.ansi;
-  requires static transitive org.jetbrains.annotations;
+import java.util.function.Consumer;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ANSIComponentRendererTest {
+  @Test
+  void testPlain() {
+    assertEquals("hello world", this.render(r -> r.text("hello world")));
+  }
+
+  @Test
+  void testBold() {
+    assertEquals("\u001b[1mi'm bold\u001b[0m", this.render(r -> {
+      final TestStyle bold = TestStyle.EMPTY.bold(StyleOps.State.TRUE);
+      r.pushStyle(bold);
+      r.text("i'm bold");
+      r.popStyle(bold);
+    }));
+  }
+
+  private String render(final Consumer<ANSIComponentRenderer<TestStyle>> action) {
+    return this.render(action, ColorLevel.TRUE_COLOR);
+  }
+
+  private String render(final Consumer<ANSIComponentRenderer<TestStyle>> action, final ColorLevel level) {
+    final ANSIComponentRenderer.ToString<TestStyle> renderer = ANSIComponentRenderer.toString(TestStyle.ops(), level);
+    action.accept(renderer);
+    renderer.complete();
+    return renderer.asString();
+  }
 }

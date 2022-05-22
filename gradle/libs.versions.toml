@@ -3,9 +3,13 @@ version = "1.0"
 
 [versions]
 indra = "2.1.1"
+junit = "5.8.2"
 
 [libraries]
 jetbrainsAnnotations = "org.jetbrains:annotations:23.0.0"
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 
 [plugins]
 indra = { id = "net.kyori.indra", version.ref = "indra" }

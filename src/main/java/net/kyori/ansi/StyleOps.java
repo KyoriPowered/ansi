@@ -30,10 +30,29 @@ import org.jetbrains.annotations.Range;
 /**
  * Data query operations that can be performed on a style-containing object.
  *
+ * <p>Each chat component has a style, and any unset values are inherited from that component's parent.</p>
+ *
  * @param <S> style type
  * @since 1.0.0
  */
 public interface StyleOps<S> {
+  /**
+   * Represents possible states for a decoration.
+   *
+   * <p>{@code UNSET} will inherit the parent style.</p>
+   *
+   * @since 1.0.0
+   */
+  enum State {
+    TRUE, FALSE, UNSET;
+  }
+
+  /**
+   * Indicates that the queried style has no color set.
+   *
+   * @since 1.0.0
+   */
+  int COLOR_UNSET = -1;
 
   /**
    * Whether the style indicates a component is bold or not.
@@ -42,7 +61,7 @@ public interface StyleOps<S> {
    * @return if bold
    * @since 1.0.0
    */
-  boolean bold(final @NotNull S style);
+  State bold(final @NotNull S style);
 
   /**
    * Get the italic value from this style.
@@ -51,7 +70,7 @@ public interface StyleOps<S> {
    * @return if italic
    * @since 1.0.0
    */
-  boolean italics(final @NotNull S style);
+  State italics(final @NotNull S style);
 
   /**
    * Get the underlined value from this style.
@@ -60,7 +79,7 @@ public interface StyleOps<S> {
    * @return if underlined
    * @since 1.0.0
    */
-  boolean underlined(final @NotNull S style);
+  State underlined(final @NotNull S style);
 
   /**
    * Get the strikethrough value from this style.
@@ -69,8 +88,7 @@ public interface StyleOps<S> {
    * @return if struck-through
    * @since 1.0.0
    */
-  boolean strikethrough(final @NotNull S style);
-
+  State strikethrough(final @NotNull S style);
 
   /**
    * Get the obfuscated value from this style.
@@ -79,13 +97,13 @@ public interface StyleOps<S> {
    * @return if obfuscated ('magic' text)
    * @since 1.0.0
    */
-  boolean obfuscated(final @NotNull S style);
+  State obfuscated(final @NotNull S style);
 
   /**
-   * Get the colour as an int-packed RGB value.
+   * Get the color as an int-packed RGB value.
    *
    * @param style the active style
-   * @return the text colour, or {@code -1} if no colour is set
+   * @return the text color, or {@value #COLOR_UNSET} if no color is set
    * @since 1.0.0
    */
   @Range(from = -1, to = 0xffffff) int color(final @NotNull S style);
@@ -98,17 +116,4 @@ public interface StyleOps<S> {
    * @since 1.0.0
    */
   @Nullable String font(final @NotNull S style);
-
-  /**
-   * Merge two styles together.
-   *
-   * <p>Values from {@code child} will override values from {@code parent}.</p>
-   *
-   * @param parent the parent style
-   * @param child the child style
-   * @return a new, merged style
-   * @since 1.0.0
-   */
-  @NotNull S merge(final @NotNull S parent, final @NotNull S child);
-
 }

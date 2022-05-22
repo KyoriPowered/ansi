@@ -21,13 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.ansi;
 
-/**
- * A library for representing Minecraft chat component style as ANSI control codes.
- *
- * @see net.kyori.ansi.ANSIComponentRenderer
- */
-module net.kyori.ansi {
-  exports net.kyori.ansi;
-  requires static transitive org.jetbrains.annotations;
+class ColorLevelTest {
+  // TODO
 }

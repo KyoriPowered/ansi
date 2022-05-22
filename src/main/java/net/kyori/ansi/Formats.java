@@ -23,7 +23,13 @@
  */
 package net.kyori.ansi;
 
+import java.util.function.Consumer;
+
 final class Formats {
+  static String reset() {
+    return "0";
+  }
+
   static String bold(final boolean active) {
     return active ? "1" : "22";
   }
@@ -42,5 +48,15 @@ final class Formats {
 
   static String obfuscated(final boolean active) {
     return active ? "8" : "28";
+  }
+
+  static void emit(final String sequence, final StringBuilder buffer) {
+    buffer.append("\u001b[").append(sequence).append('m');
+  }
+
+  static void emit(final Consumer<StringBuilder> sequence, final StringBuilder buffer) {
+    buffer.append("\u001b[");
+    sequence.accept(buffer);
+    buffer.append("m");
   }
 }
