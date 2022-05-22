@@ -40,6 +40,10 @@ sourceSets {
     }
 }
 
+indraSonatype {
+  useAlternateSonatypeOSSHost("s01")
+}
+
 indra {
     github("KyoriPowered", "ansi") {
         ci(true)
