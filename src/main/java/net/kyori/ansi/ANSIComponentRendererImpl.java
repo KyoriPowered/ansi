@@ -24,8 +24,7 @@
 package net.kyori.ansi;
 
 import java.util.Arrays;
-import java.util.EnumSet;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,7 +43,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   @Override
-  public @NonNull ANSIComponentRenderer<S> pushStyle(final @NonNull S style) {
+  public @NotNull ANSIComponentRenderer<S> pushStyle(final @NotNull S style) {
     final int idx = ++this.head;
     if(idx >= this.styles.length) {
       this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
@@ -61,7 +60,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   @Override
-  public @NonNull ANSIComponentRenderer<S> text(final @NonNull String text) {
+  public @NotNull ANSIComponentRenderer<S> text(final @NotNull String text) {
     // Compute style difference
     // Then append the string
     this.builder.append(text);
@@ -73,7 +72,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   @Override
-  public @NonNull ANSIComponentRenderer<S> popStyle(final @NonNull S style) {
+  public @NotNull ANSIComponentRenderer<S> popStyle(final @NotNull S style) {
     // Pop style onto stack, update pointer, validate balance
     if(this.head-- < 0) {
       throw new IllegalStateException("Tried to pop beyond what was pushed!");
@@ -99,7 +98,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
     Style() {
     }
 
-    <S> void update(final @NonNull S that, final @NonNull StyleOps<S> ops) {
+    <S> void update(final @NotNull S that, final @NotNull StyleOps<S> ops) {
       this.color = ops.color(that);
       this.bold = ops.bold(that);
       this.italics = ops.italics(that);
@@ -120,7 +119,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   @Override
-  public @NonNull ANSIComponentRenderer<S> complete() {
+  public @NotNull ANSIComponentRenderer<S> complete() {
     if(this.head != -1) {
       throw new IllegalStateException("Ended build with unbalanced stack. Remaining items are: " + Arrays.toString(Arrays.copyOf(this.styles, this.head + 1)));
     }
@@ -134,12 +133,12 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
     }
 
     @Override
-    public void builder(final @NonNull StringBuilder builder) {
+    public void builder(final @NotNull StringBuilder builder) {
       this.builder = requireNonNull(builder, "builder");
     }
 
     @Override
-    public @NonNull StringBuilder builder() {
+    public @NotNull StringBuilder builder() {
       if(this.builder == null) {
         throw new IllegalStateException("String builder has not yet been initialized");
       }

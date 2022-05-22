@@ -23,9 +23,9 @@
  */
 package net.kyori.ansi;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.common.value.qual.IntRange;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Data query operations that can be performed on a style-containing object.
@@ -42,7 +42,7 @@ public interface StyleOps<S> {
    * @return if bold
    * @since 1.0.0
    */
-  boolean bold(final @NonNull S style);
+  boolean bold(final @NotNull S style);
 
   /**
    * Get the italic value from this style.
@@ -51,7 +51,7 @@ public interface StyleOps<S> {
    * @return if italic
    * @since 1.0.0
    */
-  boolean italics(final @NonNull S style);
+  boolean italics(final @NotNull S style);
 
   /**
    * Get the underlined value from this style.
@@ -60,7 +60,7 @@ public interface StyleOps<S> {
    * @return if underlined
    * @since 1.0.0
    */
-  boolean underlined(final @NonNull S style);
+  boolean underlined(final @NotNull S style);
 
   /**
    * Get the strikethrough value from this style.
@@ -69,7 +69,7 @@ public interface StyleOps<S> {
    * @return if struck-through
    * @since 1.0.0
    */
-  boolean strikethrough(final @NonNull S style);
+  boolean strikethrough(final @NotNull S style);
 
 
   /**
@@ -79,7 +79,7 @@ public interface StyleOps<S> {
    * @return if obfuscated ('magic' text)
    * @since 1.0.0
    */
-  boolean obfuscated(final @NonNull S style);
+  boolean obfuscated(final @NotNull S style);
 
   /**
    * Get the colour as an int-packed RGB value.
@@ -88,7 +88,7 @@ public interface StyleOps<S> {
    * @return the text colour, or {@code -1} if no colour is set
    * @since 1.0.0
    */
-  @IntRange(from = -1, to = 0xffffff) int color(final @NonNull S style);
+  @Range(from = -1, to = 0xffffff) int color(final @NotNull S style);
 
   /**
    * Get the style's declared font as a string representing a resource location.
@@ -97,7 +97,7 @@ public interface StyleOps<S> {
    * @return the font, if any is present
    * @since 1.0.0
    */
-  @Nullable String font(final @NonNull S style);
+  @Nullable String font(final @NotNull S style);
 
   /**
    * Merge two styles together.
@@ -109,6 +109,6 @@ public interface StyleOps<S> {
    * @return a new, merged style
    * @since 1.0.0
    */
-  @NonNull S merge(final @NonNull S parent, final @NonNull S child);
+  @NotNull S merge(final @NotNull S parent, final @NotNull S child);
 
 }

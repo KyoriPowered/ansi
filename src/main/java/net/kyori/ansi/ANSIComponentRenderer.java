@@ -23,7 +23,7 @@
  */
 package net.kyori.ansi;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A renderer converting a flattened component into ANSI.
@@ -41,13 +41,13 @@ public interface ANSIComponentRenderer<S> {
     return new ANSIComponentRendererImpl.ToStringBuilder<>(ops);
   }
 
-  @NonNull ANSIComponentRenderer<S> pushStyle(final @NonNull S style);
+  @NotNull ANSIComponentRenderer<S> pushStyle(final @NotNull S style);
 
-  @NonNull ANSIComponentRenderer<S> text(final @NonNull String text);
+  @NotNull ANSIComponentRenderer<S> text(final @NotNull String text);
 
-  @NonNull ANSIComponentRenderer<S> popStyle(final @NonNull S style);
+  @NotNull ANSIComponentRenderer<S> popStyle(final @NotNull S style);
 
-  @NonNull ANSIComponentRenderer<S> complete();
+  @NotNull ANSIComponentRenderer<S> complete();
 
   /**
    * A mutable sub-interface that allows targeting an existing string builder.
@@ -57,9 +57,9 @@ public interface ANSIComponentRenderer<S> {
    */
   interface ToStringBuilder<S> extends ANSIComponentRenderer<S> {
 
-    void builder(final @NonNull StringBuilder builder);
+    void builder(final @NotNull StringBuilder builder);
 
-    @NonNull StringBuilder builder();
+    @NotNull StringBuilder builder();
 
   }
 
@@ -71,7 +71,7 @@ public interface ANSIComponentRenderer<S> {
    */
   interface ToString<S> extends ANSIComponentRenderer<S> {
 
-    @NonNull String asString();
+    @NotNull String asString();
 
   }
 }

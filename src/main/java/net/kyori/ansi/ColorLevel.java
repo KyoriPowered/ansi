@@ -23,10 +23,11 @@
  */
 package net.kyori.ansi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Supported color levels.
@@ -36,20 +37,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public enum ColorLevel {
   TRUE_COLOR {
     @Override
-    public @NonNull String determineEscape(final int rgb) {
+    public @NotNull String determineEscape(final int rgb) {
       return "38;2;" + ((rgb >> 16) & 0xff) + ';' + ((rgb >> 8) & 0xff) + ';' + (rgb & 0xff);
     }
   },
   INDEXED_256 {
     @Override
-    public @NonNull String determineEscape(final int rgbColor) {
+    public @NotNull String determineEscape(final int rgbColor) {
       // TODO return "38;5;" + idx;
       return INDEXED_16.determineEscape(rgbColor);
     }
   },
   INDEXED_16 {
     @Override
-    public @NonNull String determineEscape(final int rgbColor) {
+    public @NotNull String determineEscape(final int rgbColor) {
       switch(rgbColor) {
         // Default MC colors
         case 0x000000 /* black */: return "30";
@@ -83,7 +84,7 @@ public enum ColorLevel {
    * @return the estimated color level
    * @since 1.0.0
    */
-  public static @NonNull ColorLevel estimate(final Supplier<String> readLine, final Consumer<String> writeLine) {
+  public static @NotNull ColorLevel estimate(final Supplier<String> readLine, final Consumer<String> writeLine) {
     // TODO
     // https://gist.github.com/XVilka/8346728d
     // TODO: Add our own system property for override
@@ -108,5 +109,5 @@ public enum ColorLevel {
    * @return an appropriate escape sequence for the color.
    * @since 1.0.0
    */
-  public abstract @NonNull String determineEscape(final int rgbColor);
+  public abstract @NotNull String determineEscape(final int rgbColor);
 }

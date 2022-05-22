@@ -24,5 +24,5 @@
 @SuppressWarnings({"requires-automatic", "requires-transitive-automatic"})
 module net.kyori.ansi {
   exports net.kyori.ansi;
-  requires static transitive org.checkerframework.checker.qual;
+  requires static transitive org.jetbrains.annotations;
 }

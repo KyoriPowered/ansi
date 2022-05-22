@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        indraVersion = "2.0.6"
+        indraVersion = "2.1.1"
     }
 }
 
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi "org.checkerframework:checker-qual:3.12.0"
+    compileOnlyApi "org.jetbrains:annotations:23.0.0"
 }
 
 sourceSets {
@@ -34,7 +34,7 @@ indra {
     mitLicense()
 
     javaVersions {
-        testWith(8, 11, 16)
+        testWith(8, 11, 18)
     }
 
     configurePublications {
