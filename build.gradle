@@ -1,13 +1,7 @@
-buildscript {
-    ext {
-        indraVersion = "2.1.1"
-    }
-}
-
 plugins {
-    id "net.kyori.indra" version "$indraVersion"
-    id "net.kyori.indra.license-header" version "$indraVersion"
-    id "net.kyori.indra.publishing.sonatype" version "$indraVersion"
+  alias(libs.plugins.indra)
+  alias(libs.plugins.indra.publishing.sonatype)
+  alias(libs.plugins.spotless)
 }
 
 repositories {
@@ -15,7 +9,19 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi "org.jetbrains:annotations:23.0.0"
+    compileOnlyApi libs.jetbrainsAnnotations
+}
+
+spotless {
+  java {
+    def lineSep = System.lineSeparator()
+    File contents = rootProject.file('license_header.txt')
+    def licenseText = "/*" + lineSep + contents.readLines('utf-8')
+      .collect { (" * " + it).stripTrailing() }
+      .join(lineSep) + lineSep + " */"
+
+    licenseHeader(licenseText)
+  }
 }
 
 sourceSets {

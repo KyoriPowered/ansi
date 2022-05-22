@@ -1,0 +1,13 @@
+[metadata]
+version = "1.0"
+
+[versions]
+indra = "2.1.1"
+
+[libraries]
+jetbrainsAnnotations = "org.jetbrains:annotations:23.0.0"
+
+[plugins]
+indra = { id = "net.kyori.indra", version.ref = "indra" }
+indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
+spotless = "com.diffplug.spotless:6.6.1"
