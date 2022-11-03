@@ -2,7 +2,7 @@
 version = "1.0"
 
 [versions]
-indra = "2.2.0"
+indra = "3.0.1"
 junit = "5.9.1"
 
 [libraries]
