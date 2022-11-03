@@ -2,7 +2,7 @@
 version = "1.0"
 
 [versions]
-indra = "2.1.1"
+indra = "2.2.0"
 junit = "5.9.1"
 
 [libraries]
@@ -14,4 +14,4 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 [plugins]
 indra = { id = "net.kyori.indra", version.ref = "indra" }
 indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
-spotless = "com.diffplug.spotless:6.6.1"
+spotless = "com.diffplug.spotless:6.11.0"
