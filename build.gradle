@@ -1,7 +1,9 @@
 plugins {
   alias(libs.plugins.indra)
   alias(libs.plugins.indra.publishing.sonatype)
+  alias(libs.plugins.indra.licenser.spotless)
   alias(libs.plugins.spotless)
+  id 'eclipse'
 }
 
 group = "net.kyori"
@@ -21,13 +23,26 @@ dependencies {
 
 spotless {
   java {
-    def lineSep = System.lineSeparator()
-    File contents = rootProject.file('license_header.txt')
-    def licenseText = "/*" + lineSep + contents.readLines('utf-8')
-      .collect { (" * " + it).stripTrailing() }
-      .join(lineSep) + lineSep + " */"
+    endWithNewline()
+    indentWithSpaces 2
+    importOrderFile rootProject.file('.spotless/kyori.importorder')
+    trimTrailingWhitespace()
+  }
+}
 
-    licenseHeader(licenseText)
+eclipse {
+  classpath {
+    file.whenMerged { classpath ->
+      classpath.entries.each { entry ->
+        if (entry instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder) {
+          def extraReads = ['org.junit.jupiter.api']
+          .collect { "net.kyori.ansi=$it" }
+          .join(':')
+          entry.entryAttributes['add-reads'] = extraReads
+          entry.entryAttributes['module'] = 'true'
+        }
+      }
+    }
   }
 }
 
