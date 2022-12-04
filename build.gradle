@@ -22,6 +22,7 @@ dependencies {
 }
 
 spotless {
+  ratchetFrom 'origin/trunk'
   java {
     endWithNewline()
     indentWithSpaces 2
