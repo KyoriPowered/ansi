@@ -3,7 +3,7 @@ version = "1.0"
 
 [versions]
 indra = "3.0.1"
-junit = "5.9.1"
+junit = "5.9.2"
 
 [libraries]
 jetbrainsAnnotations = "org.jetbrains:annotations:23.1.0"
