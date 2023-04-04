@@ -15,4 +15,4 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 indra = { id = "net.kyori.indra", version.ref = "indra" }
 indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 indra-licenser-spotless = { id = "net.kyori.indra.licenser.spotless", version.ref = "indra" }
-spotless = "com.diffplug.spotless:6.16.0"
+spotless = "com.diffplug.spotless:6.17.0"
