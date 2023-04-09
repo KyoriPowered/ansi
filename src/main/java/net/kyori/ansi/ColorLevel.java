@@ -53,14 +53,58 @@ public enum ColorLevel {
     @Override
     public @NotNull String determineEscape(final int rgbColor) {
       // REFERENCES
-      // https://gitlab.gnome.org/GNOME/vte/-/blob/master/src/vte.cc#L2419
+      // https://gitlab.gnome.org/GNOME/vte/-/blob/19acc51708d9e75ef2b314aa026467570e0bd8ee/src/vte.cc#L2485
       // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-      int idx = base256idx(rgbColor);
-      if (idx == -1) { // match based on RGB
-        final int r = Math.min(((rgbColor >> 16) & 0xff) / 42, 6);
-        final int g = Math.min(((rgbColor >> 8) & 0xff) / 42, 6);
-        final int b = Math.min((rgbColor & 0xff) / 42, 6);
-        idx = 16 + 36 * r + 6 * g + b;
+      if (indexed256ColorTable == null) {
+        indexed256ColorTable = new int[256];
+        // build the table
+        for (int i = 0; i < indexed256ColorTable.length; i++) {
+          int red;
+          int green;
+          int blue;
+
+          if (i < 16) {
+            blue = (i & 4) != 0 ? 0xc000 : 0;
+            green = (i & 2) != 0 ? 0xc000 : 0;
+            red = (i & 1) != 0 ? 0xc000 : 0;
+            if (i > 7) {
+              blue += 0x3fff;
+              green += 0x3fff;
+              red += 0x3fff;
+            }
+          } else if (i < 232) {
+            int j = i - 16;
+            int r = j / 36;
+            int g = (j / 6) % 6;
+            int b = j % 6;
+            red = (r == 0) ? 0 : r * 40 + 55;
+            green = (g == 0) ? 0 : g * 40 + 55;
+            blue = (b == 0) ? 0 : b * 40 + 55;
+          } else {
+            int grayscale = 8 + (i - 232) * 10;
+            red = grayscale;
+            green = grayscale;
+            blue = grayscale;
+          }
+
+          indexed256ColorTable[i] = (red << 16) | (green << 8) | blue;
+        }
+      }
+
+      int idx = -1;
+      int bestDistance = Integer.MAX_VALUE;
+      int b1 = rgbColor & 0xff;
+      int g1 = (rgbColor >> 8) & 0xff;
+      int r1 = (rgbColor >> 16) & 0xff;
+      for (int i = 0; i < indexed256ColorTable.length; i++) {
+        int b2 = indexed256ColorTable[i] & 0xff;
+        int g2 = indexed256ColorTable[i] >> 8 & 0xff;
+        int r2 = indexed256ColorTable[i] >> 16 & 0xff;
+        int distance = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          idx = i;
+        }
       }
 
       return "38;5;" + idx;
@@ -101,6 +145,7 @@ public enum ColorLevel {
 
   private static final String COLORTERM = System.getenv("COLORTERM");
   private static final String TERM = System.getenv("TERM");
+  private static int[] indexed256ColorTable = null;
 
   /**
    * Attempt to estimate the supported color level of the current terminal using the active environment
@@ -133,27 +178,4 @@ public enum ColorLevel {
    * @since 1.0.0
    */
   public abstract @NotNull String determineEscape(final int rgbColor);
-
-  private static int base256idx(final int color) {
-      switch(color) {
-        // Default MC colors
-        case 0x000000 /* black */: return 0x0;
-        case 0x0000aa /* dark_blue */: return 0x4;
-        case 0x00aa00 /* dark_green */: return 0x2;
-        case 0x00aaaa /* dark_aqua */: return 0x6;
-        case 0xaa0000 /* dark_red */: return 0x1;
-        case 0xaa00aa /* dark_purple */: return 0x5;
-        case 0xffaa00 /* gold */: return 0x3;
-        case 0xaaaaaa /* gray */: return 0x7;
-        case 0x555555 /* dark_gray */: return 0x8;
-        case 0x5555ff /* blue */: return 0xC;
-        case 0x55ff55 /* green */: return 0xA;
-        case 0x55ffff /* aqua */: return 0xE;
-        case 0xff5555 /* red */: return 0x9;
-        case 0xff55ff /* light_purple */: return 0xD;
-        case 0xffff55 /* yellow */: return 0xB;
-        case 0xffffff /* white */: return 0xF;
-        default: return -1;
-      }
-  }
 }
