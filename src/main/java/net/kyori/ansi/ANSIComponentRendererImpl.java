@@ -35,7 +35,6 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   private final ColorLevel color;
 
   protected StringBuilder builder;
-  @SuppressWarnings("unchecked")
   private final Frame active = new Frame();
   private Frame[] styles = new Frame[8];
   private int head = -1;
@@ -207,7 +206,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
 
     @Override
     public @NotNull StringBuilder builder() {
-      if(this.builder == null) {
+      if (this.builder == null) {
         throw new IllegalStateException("String builder has not yet been initialized");
       }
       return this.builder;

@@ -120,7 +120,7 @@ public enum ColorLevel {
   INDEXED_16 {
     @Override
     public @NotNull String determineEscape(final int rgbColor) {
-      switch(rgbColor) {
+      switch (rgbColor) {
         // Default MC colors
         case 0x000000 /* black */: return "30";
         case 0x0000aa /* dark_blue */: return "34";
@@ -160,7 +160,7 @@ public enum ColorLevel {
     // See https://github.com/Minecrell/TerminalConsoleAppender/#supported-environments for other system properties to be aware of
     if (COLORTERM != null && (COLORTERM.equals("truecolor") || COLORTERM.equals("24bit"))) {
       return ColorLevel.TRUE_COLOR;
-    } else if(TERM != null && TERM.contains("256color")) {
+    } else if (TERM != null && TERM.contains("256color")) {
       return ColorLevel.INDEXED_256;
     }
 
