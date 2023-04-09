@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2021-2022 KyoriPowered
+ * Copyright (c) 2021-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -221,7 +221,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
     }
 
     @Override
-    public String asString() {
+    public @NotNull String asString() {
       final String output = this.builder.toString();
       this.builder.delete(0, this.builder.length());
       return output;

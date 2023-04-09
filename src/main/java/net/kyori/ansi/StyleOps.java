@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2021-2022 KyoriPowered
+ * Copyright (c) 2021-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ public interface StyleOps<S> {
    * @since 1.0.0
    */
   enum State {
-    TRUE, FALSE, UNSET;
+    TRUE, FALSE, UNSET
   }
 
   /**
