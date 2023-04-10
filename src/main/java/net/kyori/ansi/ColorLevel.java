@@ -59,21 +59,17 @@ public enum ColorLevel {
         indexed256ColorTable = new int[256];
         // No cache primed, build the table!
         for (int i = 0; i < indexed256ColorTable.length; i++) {
+          if (i < 16) {
+            // The 16 "standard" colors, same as INDEXED_16
+            indexed256ColorTable[i] = StandardColor.values()[i].color;
+            continue;
+          }
+
           int red;
           int green;
           int blue;
 
-          if (i < 16) {
-            // The 16 "standard" colors, same as INDEXED_16
-            blue = (i & 4) != 0 ? 0xc000 : 0;
-            green = (i & 2) != 0 ? 0xc000 : 0;
-            red = (i & 1) != 0 ? 0xc000 : 0;
-            if (i > 7) {
-              blue += 0x3fff;
-              green += 0x3fff;
-              red += 0x3fff;
-            }
-          } else if (i < 232) {
+          if (i < 232) {
             // 216 color palette, forming a 6x6x6 color cube.
             int j = i - 16;
             int r = j / 36;
@@ -182,20 +178,20 @@ public enum ColorLevel {
 
   private enum StandardColor {
     BLACK(0x00_00_00, "30"),
-    DARK_BLUE(0x00_00_aa, "34"),
-    DARK_GREEN(0x00_aa_00, "32"),
-    DARK_AQUA(0x00_aa_aa, "36"),
     DARK_RED(0xaa_00_00, "31"),
-    DARK_PURPLE(0xaa_00_aa, "35"),
+    DARK_GREEN(0x00_aa_00, "32"),
     GOLD(0xff_aa_00, "33"),
+    DARK_BLUE(0x00_00_aa, "34"),
+    DARK_PURPLE(0xaa_00_aa, "35"),
+    DARK_AQUA(0x00_aa_aa, "36"),
     GRAY(0xaa_aa_aa, "37"),
     DARK_GRAY(0x55_55_55, "90"),
-    BLUE(0x55_55_ff, "94"),
-    GREEN(0x55_ff_55, "92"),
-    AQUA(0x55_ff_ff, "96"),
     RED(0xff_55_55, "91"),
-    LIGHT_PURPLE(0xff_55_ff, "95"),
+    GREEN(0x55_ff_55, "92"),
     YELLOW(0xff_ff_55, "93"),
+    BLUE(0x55_55_ff, "94"),
+    LIGHT_PURPLE(0xff_55_ff, "95"),
+    AQUA(0x55_ff_ff, "96"),
     WHITE(0xff_ff_ff, "97");
 
     final int color;

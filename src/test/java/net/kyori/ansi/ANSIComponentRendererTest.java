@@ -53,7 +53,7 @@ class ANSIComponentRendererTest {
       r.popStyle(red);
     };
     assertEquals("\u001B[38;2;255;85;85mi'm red\u001b[0m", this.render(redAction, ColorLevel.TRUE_COLOR));
-    assertEquals("\u001B[38;5;203mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_256));
+    assertEquals("\u001B[38;5;9mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_256));
     assertEquals("\u001B[91mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_16));
 
     Consumer<ANSIComponentRenderer<TestStyle>> pureRedAction = r -> {
