@@ -57,13 +57,14 @@ public enum ColorLevel {
       // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
       if (indexed256ColorTable == null) {
         indexed256ColorTable = new int[256];
-        // build the table
+        // No cache primed, build the table!
         for (int i = 0; i < indexed256ColorTable.length; i++) {
           int red;
           int green;
           int blue;
 
           if (i < 16) {
+            // The 16 "standard" colors, same as INDEXED_16
             blue = (i & 4) != 0 ? 0xc000 : 0;
             green = (i & 2) != 0 ? 0xc000 : 0;
             red = (i & 1) != 0 ? 0xc000 : 0;
@@ -73,6 +74,7 @@ public enum ColorLevel {
               red += 0x3fff;
             }
           } else if (i < 232) {
+            // 216 color palette, forming a 6x6x6 color cube.
             int j = i - 16;
             int r = j / 36;
             int g = (j / 6) % 6;
@@ -81,6 +83,7 @@ public enum ColorLevel {
             green = (g == 0) ? 0 : g * 40 + 55;
             blue = (b == 0) ? 0 : b * 40 + 55;
           } else {
+            // 24 grayscale colors.
             int grayscale = 8 + (i - 232) * 10;
             red = grayscale;
             green = grayscale;
@@ -91,19 +94,24 @@ public enum ColorLevel {
         }
       }
 
+      // Find the color index closest to the current color. This uses a simple Manhattan distance from the 3 RGB color
+      // components, since there should be enough colors for this to be accurate enough, and it's fast.
       int idx = -1;
       int bestDistance = Integer.MAX_VALUE;
-      int b1 = rgbColor & 0xff;
-      int g1 = (rgbColor >> 8) & 0xff;
       int r1 = (rgbColor >> 16) & 0xff;
+      int g1 = (rgbColor >> 8) & 0xff;
+      int b1 = rgbColor & 0xff;
       for (int i = 0; i < indexed256ColorTable.length; i++) {
-        int b2 = indexed256ColorTable[i] & 0xff;
-        int g2 = indexed256ColorTable[i] >> 8 & 0xff;
         int r2 = indexed256ColorTable[i] >> 16 & 0xff;
+        int g2 = indexed256ColorTable[i] >> 8 & 0xff;
+        int b2 = indexed256ColorTable[i] & 0xff;
         int distance = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
         if (distance < bestDistance) {
           bestDistance = distance;
           idx = i;
+        }
+        if (distance == 0) {
+          break; // It's an exact match, so no need to check any other entries
         }
       }
 
