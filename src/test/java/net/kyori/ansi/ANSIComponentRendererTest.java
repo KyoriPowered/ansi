@@ -64,8 +64,7 @@ class ANSIComponentRendererTest {
     };
     assertEquals("\u001B[38;2;255;0;0mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.TRUE_COLOR));
     assertEquals("\u001B[38;5;196mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.INDEXED_256));
-    // todo downsample
-    // assertEquals("\u001B[91mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.INDEXED_16));
+    assertEquals("\u001B[31mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.INDEXED_16));
   }
 
   @Test

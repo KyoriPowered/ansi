@@ -128,26 +128,19 @@ public enum ColorLevel {
   INDEXED_16 {
     @Override
     public @NotNull String determineEscape(final int rgbColor) {
-      switch (rgbColor) {
-        // Default MC colors
-        case 0x000000 /* black */: return "30";
-        case 0x0000aa /* dark_blue */: return "34";
-        case 0x00aa00 /* dark_green */: return "32";
-        case 0x00aaaa /* dark_aqua */: return "36";
-        case 0xaa0000 /* dark_red */: return "31";
-        case 0xaa00aa /* dark_purple */: return "35";
-        case 0xffaa00 /* gold */: return "33";
-        case 0xaaaaaa /* gray */: return "37";
-        case 0x555555 /* dark_gray */: return "90";
-        case 0x5555ff /* blue */: return "94";
-        case 0x55ff55 /* green */: return "92";
-        case 0x55ffff /* aqua */: return "96";
-        case 0xff5555 /* red */: return "91";
-        case 0xff55ff /* light_purple */: return "95";
-        case 0xffff55 /* yellow */: return "93";
-        case 0xffffff /* white */: return "97";
-        default: return ColorLevel.TRUE_COLOR.determineEscape(rgbColor); // Not a default? just emit RGB ig (TODO downsample)
+      float matchedDistance = Float.MAX_VALUE;
+      StandardColor match = StandardColor.BLACK;
+      for (StandardColor potential : StandardColor.values()) {
+        final float distance = HSV.fromRGB(rgbColor).distance(HSV.fromRGB(potential.color));
+        if (distance < matchedDistance) {
+          match = potential;
+          matchedDistance = distance;
+        }
+        if (distance == 0) {
+          break; // same colour! whoo!
+        }
       }
+      return match.index;
     }
   };
 
@@ -186,4 +179,89 @@ public enum ColorLevel {
    * @since 1.0.0
    */
   public abstract @NotNull String determineEscape(final int rgbColor);
+
+  private enum StandardColor {
+    BLACK(0x00_00_00, "30"),
+    DARK_BLUE(0x00_00_aa, "34"),
+    DARK_GREEN(0x00_aa_00, "32"),
+    DARK_AQUA(0x00_aa_aa, "36"),
+    DARK_RED(0xaa_00_00, "31"),
+    DARK_PURPLE(0xaa_00_aa, "35"),
+    GOLD(0xff_aa_00, "33"),
+    GRAY(0xaa_aa_aa, "37"),
+    DARK_GRAY(0x55_55_55, "90"),
+    BLUE(0x55_55_ff, "94"),
+    GREEN(0x55_ff_55, "92"),
+    AQUA(0x55_ff_ff, "96"),
+    RED(0xff_55_55, "91"),
+    LIGHT_PURPLE(0xff_55_ff, "95"),
+    YELLOW(0xff_ff_55, "93"),
+    WHITE(0xff_ff_ff, "97");
+
+    final int color;
+    final String index;
+
+    StandardColor(int color, String index) {
+      this.color = color;
+      this.index = index;
+    }
+  }
+
+  private static class HSV {
+    float h;
+    float s;
+    float v;
+
+    HSV(float h, float s, float v) {
+      this.h = h;
+      this.s = s;
+      this.v = v;
+    }
+
+    private float distance(final @NotNull HSV other) {
+      // Copied from https://github.com/KyoriPowered/adventure/blob/a7e7bc68c684fb4d332ec9fbbb27e12f871bcfa8/api/src/main/java/net/kyori/adventure/text/format/NamedTextColor.java#L267
+      // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
+      final float hueDistance = 3 * Math.min(Math.abs(this.h - other.h), 1f - Math.abs(this.h - other.h));
+      final float saturationDiff = this.s - other.s;
+      final float valueDiff = this.v - other.v;
+      return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
+    }
+
+    private static HSV fromRGB(int rgb) {
+      // Copied from https://github.com/KyoriPowered/adventure/blob/a7e7bc68c684fb4d332ec9fbbb27e12f871bcfa8/api/src/main/java/net/kyori/adventure/util/HSVLike.java#L79
+      final float r = ((rgb >> 16) & 0xff) / 255.0f;
+      final float g = ((rgb >> 8) & 0xff) / 255.0f;
+      final float b = (rgb & 0xff) / 255.0f;
+
+      final float min = Math.min(r, Math.min(g, b));
+      final float max = Math.max(r, Math.max(g, b)); // v
+      final float delta = max - min;
+
+      final float s;
+      if (max != 0) {
+        s = delta / max; // s
+      } else {
+        // r = g = b = 0
+        s = 0;
+      }
+      if (s == 0) { // s = 0, h is undefined
+        return new HSV(0, s, max);
+      }
+
+      float h;
+      if (r == max) {
+        h = (g - b) / delta; // between yellow & magenta
+      } else if (g == max) {
+        h = 2 + (b - r) / delta; // between cyan & yellow
+      } else {
+        h = 4 + (r - g) / delta; // between magenta & cyan
+      }
+      h *= 60; // degrees
+      if (h < 0) {
+        h += 360;
+      }
+
+      return new HSV(h / 360.0f, s, max);
+    }
+  }
 }
