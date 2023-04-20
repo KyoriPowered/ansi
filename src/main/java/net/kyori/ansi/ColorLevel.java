@@ -23,6 +23,7 @@
  */
 package net.kyori.ansi;
 
+import java.util.Locale;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -154,6 +155,8 @@ public enum ColorLevel {
     }
   };
 
+  public static final String COLOR_LEVEL_PROPERTY_NAME = "net.kyori.ansi.colorLevel";
+
   private static final String COLORTERM = System.getenv("COLORTERM");
   private static final String TERM = System.getenv("TERM");
   private static int[] indexed256ColorTable = null;
@@ -161,15 +164,28 @@ public enum ColorLevel {
   /**
    * Attempt to estimate the supported color level of the current terminal using the active environment
    *
+   * <p>Use the system property {@value COLOR_LEVEL_PROPERTY_NAME} to override the result of this function</p>
+   *
    * @return the estimated color level
    * @since 1.0.0
    */
   public static @NotNull ColorLevel compute() {
+    final String propertyValue = System.getProperty(COLOR_LEVEL_PROPERTY_NAME);
+    if (propertyValue != null) {
+      switch (propertyValue.toLowerCase(Locale.ROOT)) {
+        case "none": return ColorLevel.NONE;
+        case "truecolor": return ColorLevel.TRUE_COLOR;
+        case "indexed256": return ColorLevel.INDEXED_256;
+        case "indexed16": return ColorLevel.INDEXED_16;
+        // In other cases, fall through below to the environment variable based check
+      }
+    }
+
     // TODO
     // https://github.com/termstandard/colors
-    // TODO: Add our own system property for override
-    // See https://github.com/Minecrell/TerminalConsoleAppender/#supported-environments for other system properties to be aware of
     if (COLORTERM != null && (COLORTERM.equals("truecolor") || COLORTERM.equals("24bit"))) {
+      return ColorLevel.TRUE_COLOR;
+    } else if (TERM != null && TERM.contains("truecolor")) {
       return ColorLevel.TRUE_COLOR;
     } else if (TERM != null && TERM.contains("256color")) {
       return ColorLevel.INDEXED_256;

@@ -119,6 +119,12 @@ class ANSIComponentRendererTest {
     }));
   }
 
+  @Test
+  void testSystemProperty() {
+    System.setProperty(ColorLevel.COLOR_LEVEL_PROPERTY_NAME, "truecolor");
+    assertEquals(ColorLevel.compute(), ColorLevel.TRUE_COLOR);
+  }
+
   private String render(final Consumer<ANSIComponentRenderer<TestStyle>> action) {
     return this.render(action, ColorLevel.TRUE_COLOR);
   }
