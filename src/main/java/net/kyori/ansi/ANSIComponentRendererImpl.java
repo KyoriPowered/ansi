@@ -128,6 +128,10 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   }
 
   private void printDifferences(final @NotNull Frame active, final @Nullable Frame target) {
+    if (this.color == ColorLevel.NONE) {
+      // In no color mode, just don't bother at all.
+      return;
+    }
     final StringBuilder builder = this.builder;
     if (target == null) {
       if (active.style != 0 || active.color != StyleOps.COLOR_UNSET)

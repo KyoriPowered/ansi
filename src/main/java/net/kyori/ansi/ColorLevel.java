@@ -32,6 +32,20 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum ColorLevel {
   /**
+   * No color at all.
+   *
+   * <p>Sometimes referred to as a "dumb" terminal. This option may be useful when the output is not a terminal, but, for example, a file.</p>
+   *
+   * @since 1.0.0
+   */
+  NONE {
+    @Override
+    public @NotNull String determineEscape(final int rgb) {
+      return "";
+    }
+  },
+
+  /**
    * Full RGB color.
    *
    * <p>Not supported by some terminals</p>

@@ -55,6 +55,7 @@ class ANSIComponentRendererTest {
     assertEquals("\u001B[38;2;255;85;85mi'm red\u001b[0m", this.render(redAction, ColorLevel.TRUE_COLOR));
     assertEquals("\u001B[38;5;9mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_256));
     assertEquals("\u001B[91mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_16));
+    assertEquals("i'm red", this.render(redAction, ColorLevel.NONE));
 
     Consumer<ANSIComponentRenderer<TestStyle>> pureRedAction = r -> {
       final TestStyle red = TestStyle.EMPTY.color(0xff_00_00);
@@ -65,6 +66,7 @@ class ANSIComponentRendererTest {
     assertEquals("\u001B[38;2;255;0;0mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.TRUE_COLOR));
     assertEquals("\u001B[38;5;196mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.INDEXED_256));
     assertEquals("\u001B[31mi'm very red\u001b[0m", this.render(pureRedAction, ColorLevel.INDEXED_16));
+    assertEquals("i'm very red", this.render(pureRedAction, ColorLevel.NONE));
   }
 
   @Test
