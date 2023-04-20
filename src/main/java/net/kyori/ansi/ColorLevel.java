@@ -155,7 +155,8 @@ public enum ColorLevel {
     }
   };
 
-  public static final String COLOR_LEVEL_PROPERTY_NAME = "net.kyori.ansi.colorLevel";
+  public static final String COLOR_LEVEL_PROPERTY = "net.kyori.ansi.colorLevel";
+  public static final String TERMINAL_ANSI_OVERRIDE_PROPERTY = "terminal.ansi";
 
   private static final String COLORTERM = System.getenv("COLORTERM");
   private static final String TERM = System.getenv("TERM");
@@ -164,21 +165,30 @@ public enum ColorLevel {
   /**
    * Attempt to estimate the supported color level of the current terminal using the active environment
    *
-   * <p>Use the system property {@value COLOR_LEVEL_PROPERTY_NAME} to override the result of this function</p>
+   * <p>Use the system property {@value COLOR_LEVEL_PROPERTY} to override the result of this function</p>
    *
    * @return the estimated color level
    * @since 1.0.0
    */
   public static @NotNull ColorLevel compute() {
-    final String propertyValue = System.getProperty(COLOR_LEVEL_PROPERTY_NAME);
-    if (propertyValue != null) {
-      switch (propertyValue.toLowerCase(Locale.ROOT)) {
+    final String colorLevelPropertyValue = System.getProperty(COLOR_LEVEL_PROPERTY);
+    if (colorLevelPropertyValue != null) {
+      switch (colorLevelPropertyValue.toLowerCase(Locale.ROOT)) {
         case "none": return ColorLevel.NONE;
         case "truecolor": return ColorLevel.TRUE_COLOR;
         case "indexed256": return ColorLevel.INDEXED_256;
         case "indexed16": return ColorLevel.INDEXED_16;
-        // In other cases, fall through below to the environment variable based check
+        // In other cases, fall through below
       }
+    }
+
+    // Respect TerminalConsoleAppender's disable toggle: see https://github.com/Minecrell/TerminalConsoleAppender
+    final String terminalAnsiPropertyValue = System.getProperty(TERMINAL_ANSI_OVERRIDE_PROPERTY);
+    if (terminalAnsiPropertyValue != null) {
+      if (terminalAnsiPropertyValue.equals("false")) {
+        return ColorLevel.NONE;
+      }
+      // In other cases, fall through below to the environment variable based check
     }
 
     // TODO

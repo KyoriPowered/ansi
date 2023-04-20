@@ -121,7 +121,10 @@ class ANSIComponentRendererTest {
 
   @Test
   void testSystemProperty() {
-    System.setProperty(ColorLevel.COLOR_LEVEL_PROPERTY_NAME, "truecolor");
+    System.setProperty(ColorLevel.TERMINAL_ANSI_OVERRIDE_PROPERTY, "false");
+    assertEquals(ColorLevel.compute(), ColorLevel.NONE);
+
+    System.setProperty(ColorLevel.COLOR_LEVEL_PROPERTY, "truecolor");
     assertEquals(ColorLevel.compute(), ColorLevel.TRUE_COLOR);
   }
 
