@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2021-2022 KyoriPowered
+ * Copyright (c) 2021-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -84,37 +84,37 @@ class TestStyle {
     static final TestOps INSTANCE = new TestOps();
 
     @Override
-    public State bold(@NotNull final TestStyle style) {
+    public State bold(final @NotNull TestStyle style) {
       return style.bold;
     }
 
     @Override
-    public State italics(@NotNull final TestStyle style) {
+    public State italics(final @NotNull TestStyle style) {
       return style.italics;
     }
 
     @Override
-    public State underlined(@NotNull final TestStyle style) {
+    public State underlined(final @NotNull TestStyle style) {
       return style.underlined;
     }
 
     @Override
-    public State strikethrough(@NotNull final TestStyle style) {
+    public State strikethrough(final @NotNull TestStyle style) {
       return style.strikethrough;
     }
 
     @Override
-    public State obfuscated(@NotNull final TestStyle style) {
+    public State obfuscated(final @NotNull TestStyle style) {
       return style.obfuscated;
     }
 
     @Override
-    public @Range(from = -1, to = 16777215) int color(@NotNull final TestStyle style) {
+    public @Range(from = -1, to = 16777215) int color(final @NotNull TestStyle style) {
       return style.color;
     }
 
     @Override
-    public @Nullable String font(@NotNull final TestStyle style) {
+    public @Nullable String font(final @NotNull TestStyle style) {
       return style.font;
     }
   }

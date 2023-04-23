@@ -1,8 +1,9 @@
 plugins {
-  alias(libs.plugins.indra)
-  alias(libs.plugins.indra.publishing.sonatype)
-  alias(libs.plugins.indra.licenser.spotless)
-  alias(libs.plugins.spotless)
+  alias libs.plugins.indra
+  alias libs.plugins.indra.checkstyle
+  alias libs.plugins.indra.publishing.sonatype
+  alias libs.plugins.spotless
+  alias libs.plugins.indra.licenser.spotless
   id 'eclipse'
 }
 
@@ -11,49 +12,51 @@ version = "1.0.0-SNAPSHOT"
 description = "A library to render Minecraft chat component styles to ANSI control codes"
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    compileOnlyApi libs.jetbrainsAnnotations
-    testImplementation platform(libs.junit.bom)
-    testImplementation libs.junit.api
-    testRuntimeOnly libs.junit.engine
+  compileOnlyApi libs.jetbrainsAnnotations
+  testImplementation platform(libs.junit.bom)
+  testImplementation libs.junit.api
+  testRuntimeOnly libs.junit.engine
+  checkstyle libs.stylecheck
 }
 
 spotless {
   ratchetFrom 'origin/trunk'
   java {
-    endWithNewline()
-    indentWithSpaces 2
-    importOrderFile rootProject.file('.spotless/kyori.importorder')
-    trimTrailingWhitespace()
+  endWithNewline()
+  indentWithSpaces 2
+  importOrderFile rootProject.file('.spotless/kyori.importorder')
+  trimTrailingWhitespace()
   }
 }
 
 eclipse {
   classpath {
-    file.whenMerged { classpath ->
-      classpath.entries.each { entry ->
-        if (entry instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder) {
-          def extraReads = ['org.junit.jupiter.api']
-          .collect { "net.kyori.ansi=$it" }
-          .join(':')
-          entry.entryAttributes['add-reads'] = extraReads
-          entry.entryAttributes['module'] = 'true'
-        }
-      }
+  file.whenMerged { classpath ->
+    classpath.entries.each { entry ->
+    if (entry instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder) {
+      def extraReads = ['org.junit.jupiter.api']
+      .collect { "net.kyori.ansi=$it" }
+      .join(':')
+      entry.entryAttributes['add-reads'] = extraReads
+      entry.entryAttributes['module'] = 'true'
     }
+    }
+  }
   }
 }
 
 sourceSets {
-    main {
-        multirelease {
-            alternateVersions(9)
-            moduleName "net.kyori.ansi"
-        }
+  main {
+    multirelease {
+      alternateVersions(9)
+      moduleName "net.kyori.ansi"
+      requireAllPackagesExported()
     }
+  }
 }
 
 indraSonatype {
@@ -61,40 +64,41 @@ indraSonatype {
 }
 
 indra {
-    github("KyoriPowered", "ansi") {
-        ci(true)
-    }
-    mitLicense()
+  github("KyoriPowered", "ansi") {
+    ci(true)
+  }
+  mitLicense()
+  checkstyle libs.versions.checkstyle.get()
 
-    javaVersions {
-        testWith(8, 11, 18)
-    }
+  javaVersions {
+    testWith(8, 11, 18)
+  }
 
-    configurePublications {
-        pom {
-            developers {
-                developer {
-                    id = "kashike"
-                    timezone = "America/Vancouver"
-                }
-
-                developer {
-                    id = "lucko"
-                    name = "Luck"
-                    url = "https://lucko.me"
-                    email = "git@lucko.me"
-                }
-
-                developer {
-                    id = "zml"
-                    name = "zml"
-                    timezone = "America/Vancouver"
-                }
-
-                developer {
-                    id = "Electroid"
-                }
-            }
+  configurePublications {
+    pom {
+      developers {
+        developer {
+          id = "kashike"
+          timezone = "America/Vancouver"
         }
+
+        developer {
+          id = "lucko"
+          name = "Luck"
+          url = "https://lucko.me"
+          email = "git@lucko.me"
+        }
+
+        developer {
+          id = "zml"
+          name = "zml"
+          timezone = "America/Vancouver"
+        }
+
+        developer {
+          id = "Electroid"
+        }
+      }
     }
+  }
 }

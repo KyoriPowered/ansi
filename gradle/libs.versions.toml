@@ -2,6 +2,7 @@
 version = "1.0"
 
 [versions]
+checkstyle = "10.9.3"
 indra = "3.0.1"
 junit = "5.9.2"
 
@@ -10,9 +11,14 @@ jetbrainsAnnotations = "org.jetbrains:annotations:24.0.1"
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+stylecheck = { module = "ca.stellardrift:stylecheck", version = "0.2.0" }
+
+# unused, for renovate
+zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
 
 [plugins]
 indra = { id = "net.kyori.indra", version.ref = "indra" }
-indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
+indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 indra-licenser-spotless = { id = "net.kyori.indra.licenser.spotless", version.ref = "indra" }
+indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 spotless = "com.diffplug.spotless:6.17.0"

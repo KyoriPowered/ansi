@@ -46,7 +46,7 @@ class ANSIComponentRendererTest {
 
   @Test
   void testColor() {
-    Consumer<ANSIComponentRenderer<TestStyle>> redAction = r -> {
+    final Consumer<ANSIComponentRenderer<TestStyle>> redAction = r -> {
       final TestStyle red = TestStyle.EMPTY.color(0xff_55_55);
       r.pushStyle(red);
       r.text("i'm red");
@@ -57,7 +57,7 @@ class ANSIComponentRendererTest {
     assertEquals("\u001B[91mi'm red\u001b[0m", this.render(redAction, ColorLevel.INDEXED_16));
     assertEquals("i'm red", this.render(redAction, ColorLevel.NONE));
 
-    Consumer<ANSIComponentRenderer<TestStyle>> pureRedAction = r -> {
+    final Consumer<ANSIComponentRenderer<TestStyle>> pureRedAction = r -> {
       final TestStyle red = TestStyle.EMPTY.color(0xff_00_00);
       r.pushStyle(red);
       r.text("i'm very red");
@@ -89,7 +89,7 @@ class ANSIComponentRendererTest {
 
   @Test
   void testStringBuilder() {
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     sb.append("hello ");
     final ANSIComponentRenderer.ToStringBuilder<TestStyle> renderer = ANSIComponentRenderer.toStringBuilder(TestStyle.ops(), ColorLevel.TRUE_COLOR);
     renderer.builder(sb);

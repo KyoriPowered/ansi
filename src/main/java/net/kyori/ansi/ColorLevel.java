@@ -80,22 +80,22 @@ public enum ColorLevel {
             continue;
           }
 
-          int red;
-          int green;
-          int blue;
+          final int red;
+          final int green;
+          final int blue;
 
           if (i < 232) {
             // 216 color palette, forming a 6x6x6 color cube.
-            int j = i - 16;
-            int r = j / 36;
-            int g = (j / 6) % 6;
-            int b = j % 6;
+            final int j = i - 16;
+            final int r = j / 36;
+            final int g = (j / 6) % 6;
+            final int b = j % 6;
             red = (r == 0) ? 0 : r * 40 + 55;
             green = (g == 0) ? 0 : g * 40 + 55;
             blue = (b == 0) ? 0 : b * 40 + 55;
           } else {
             // 24 grayscale colors.
-            int grayscale = 8 + (i - 232) * 10;
+            final int grayscale = 8 + (i - 232) * 10;
             red = grayscale;
             green = grayscale;
             blue = grayscale;
@@ -109,14 +109,14 @@ public enum ColorLevel {
       // components, since there should be enough colors for this to be accurate enough, and it's fast.
       int idx = -1;
       int bestDistance = Integer.MAX_VALUE;
-      int r1 = (rgbColor >> 16) & 0xff;
-      int g1 = (rgbColor >> 8) & 0xff;
-      int b1 = rgbColor & 0xff;
+      final int r1 = (rgbColor >> 16) & 0xff;
+      final int g1 = (rgbColor >> 8) & 0xff;
+      final int b1 = rgbColor & 0xff;
       for (int i = 0; i < indexed256ColorTable.length; i++) {
-        int r2 = indexed256ColorTable[i] >> 16 & 0xff;
-        int g2 = indexed256ColorTable[i] >> 8 & 0xff;
-        int b2 = indexed256ColorTable[i] & 0xff;
-        int distance = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+        final int r2 = indexed256ColorTable[i] >> 16 & 0xff;
+        final int g2 = indexed256ColorTable[i] >> 8 & 0xff;
+        final int b2 = indexed256ColorTable[i] & 0xff;
+        final int distance = Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
         if (distance < bestDistance) {
           bestDistance = distance;
           idx = i;
@@ -141,7 +141,7 @@ public enum ColorLevel {
     public @NotNull String determineEscape(final int rgbColor) {
       float matchedDistance = Float.MAX_VALUE;
       StandardColor match = StandardColor.BLACK;
-      for (StandardColor potential : StandardColor.values()) {
+      for (final StandardColor potential : StandardColor.values()) {
         final float distance = HSV.fromRGB(rgbColor).distance(HSV.fromRGB(potential.color));
         if (distance < matchedDistance) {
           match = potential;
@@ -163,7 +163,7 @@ public enum ColorLevel {
   private static int[] indexed256ColorTable = null;
 
   /**
-   * Attempt to estimate the supported color level of the current terminal using the active environment
+   * Attempt to estimate the supported color level of the current terminal using the active environment.
    *
    * <p>Use the system property {@value COLOR_LEVEL_PROPERTY} to override the result of this function</p>
    *
@@ -237,7 +237,7 @@ public enum ColorLevel {
     final int color;
     final String index;
 
-    StandardColor(int color, String index) {
+    StandardColor(final int color, final String index) {
       this.color = color;
       this.index = index;
     }
@@ -248,7 +248,7 @@ public enum ColorLevel {
     float s;
     float v;
 
-    HSV(float h, float s, float v) {
+    HSV(final float h, final float s, final float v) {
       this.h = h;
       this.s = s;
       this.v = v;
@@ -263,7 +263,7 @@ public enum ColorLevel {
       return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
     }
 
-    private static HSV fromRGB(int rgb) {
+    private static HSV fromRGB(final int rgb) {
       // Copied from https://github.com/KyoriPowered/adventure/blob/a7e7bc68c684fb4d332ec9fbbb27e12f871bcfa8/api/src/main/java/net/kyori/adventure/util/HSVLike.java#L79
       final float r = ((rgb >> 16) & 0xff) / 255.0f;
       final float g = ((rgb >> 8) & 0xff) / 255.0f;
