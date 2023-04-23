@@ -141,7 +141,7 @@ public enum ColorLevel {
     public @NotNull String determineEscape(final int rgbColor) {
       float matchedDistance = Float.MAX_VALUE;
       StandardColor match = StandardColor.BLACK;
-      for (final StandardColor potential : StandardColor.values()) {
+      for (final StandardColor potential : StandardColor.VALUES) {
         final float distance = HSV.fromRGB(rgbColor).distance(HSV.fromRGB(potential.color));
         if (distance < matchedDistance) {
           match = potential;
@@ -234,12 +234,18 @@ public enum ColorLevel {
     AQUA(0x55_ff_ff, "96"),
     WHITE(0xff_ff_ff, "97");
 
+    static final StandardColor[] VALUES;
+
     final int color;
     final String index;
 
     StandardColor(final int color, final String index) {
       this.color = color;
       this.index = index;
+    }
+
+    static {
+      VALUES = StandardColor.values();
     }
   }
 
