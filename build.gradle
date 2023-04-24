@@ -64,7 +64,7 @@ indra {
   checkstyle libs.versions.checkstyle.get()
 
   javaVersions {
-    testWith(8, 11, 18)
+    testWith(11, 17, 20)
   }
 
   configurePublications {
