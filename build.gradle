@@ -4,15 +4,8 @@ plugins {
   alias libs.plugins.indra.publishing.sonatype
   alias libs.plugins.spotless
   alias libs.plugins.indra.licenser.spotless
+  alias libs.plugins.indra.crossdoc
   id 'eclipse'
-}
-
-group = "net.kyori"
-version = "1.0.0-SNAPSHOT"
-description = "A library to render Minecraft chat component styles to ANSI control codes"
-
-repositories {
-  mavenCentral()
 }
 
 dependencies {
@@ -101,4 +94,8 @@ indra {
       }
     }
   }
+}
+
+indraCrossdoc {
+  baseUrl().set(providers.gradleProperty("javadocPublishRoot"))
 }
