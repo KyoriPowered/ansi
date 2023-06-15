@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 
 abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> {
   private static final int MAX_DEPTH = 128;
+  private static final int UNSET = StyleOps.COLOR_UNSET;
   private final StyleOps<S> ops;
   private final ColorLevel color;
 
@@ -43,6 +44,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
   protected ANSIComponentRendererImpl(final StyleOps<S> ops, final ColorLevel colorLevel) {
     this.ops = requireNonNull(ops, "ops");
     this.color = requireNonNull(colorLevel, "colorLevel");
+    this.active.clear();
   }
 
   private @Nullable Frame peek() {
@@ -134,17 +136,17 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
     }
     final StringBuilder builder = this.builder;
     if (target == null) {
-      if (active.style != 0 || active.color != StyleOps.COLOR_UNSET)
+      if (active.style != 0 || active.color != UNSET)
         Formats.emit(Formats.reset(), builder);
-    } else if (active.style != target.style || target.color == StyleOps.COLOR_UNSET) {
+    } else if (active.style != target.style || target.color == UNSET) {
       // reset, emit everything
-      if (active.style != 0) Formats.emit(Formats.reset(), builder);
+      if (active.style != 0 || (active.color != UNSET && target.color == UNSET)) Formats.emit(Formats.reset(), builder);
       if ((target.style & Frame.BOLD) != 0) Formats.emit(Formats.bold(true), builder);
       if ((target.style & Frame.ITALICS) != 0) Formats.emit(Formats.italics(true), builder);
       if ((target.style & Frame.OBFUSCATED) != 0) Formats.emit(Formats.obfuscated(true), builder);
       if ((target.style & Frame.STRIKETHROUGH) != 0) Formats.emit(Formats.strikethrough(true), builder);
       if ((target.style & Frame.UNDERLINED) != 0) Formats.emit(Formats.underlined(true), builder);
-      if (target.color != StyleOps.COLOR_UNSET) Formats.emit(this.color.determineEscape(target.color), builder);
+      if (target.color != UNSET) Formats.emit(this.color.determineEscape(target.color), builder);
     } else if (active.color != target.color) {
       Formats.emit(this.color.determineEscape(target.color), builder);
     }
@@ -193,7 +195,7 @@ abstract class ANSIComponentRendererImpl<S> implements ANSIComponentRenderer<S> 
     }
 
     public void clear() {
-      this.color = -1;
+      this.color = UNSET;
       this.style = 0;
     }
   }

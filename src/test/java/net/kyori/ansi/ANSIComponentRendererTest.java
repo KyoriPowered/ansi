@@ -70,6 +70,34 @@ class ANSIComponentRendererTest {
   }
 
   @Test
+  void testPopFollowedByEmptyPush() {
+    final Consumer<ANSIComponentRenderer<TestStyle>> action = r -> {
+      final TestStyle red = TestStyle.EMPTY.color(0xff_55_55);
+      r.pushStyle(red);
+      r.text("inside ");
+      r.popStyle(red);
+      r.pushStyle(TestStyle.EMPTY);
+      r.text("outside");
+      r.popStyle(TestStyle.EMPTY);
+    };
+    assertEquals("\u001B[38;2;255;85;85minside \u001b[0moutside", this.render(action, ColorLevel.TRUE_COLOR));
+
+    final Consumer<ANSIComponentRenderer<TestStyle>> action2 = r -> {
+      final TestStyle red = TestStyle.EMPTY.color(0xff_55_55);
+      final TestStyle green = TestStyle.EMPTY.color(0x55_ff_55);
+      r.pushStyle(green);
+      r.pushStyle(red);
+      r.text("inside ");
+      r.popStyle(red);
+      r.pushStyle(TestStyle.EMPTY);
+      r.text("outside");
+      r.popStyle(TestStyle.EMPTY);
+      r.popStyle(green);
+    };
+    assertEquals("\u001B[38;2;255;85;85minside \u001B[38;2;85;255;85moutside\u001b[0m", this.render(action2, ColorLevel.TRUE_COLOR));
+  }
+
+  @Test
   void testDeepColor() {
     assertEquals("\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[38;2;0;255;0mg\u001B[38;2;0;0;255mb\u001B[0m", this.render(r -> {
       final TestStyle g = TestStyle.EMPTY.color(0x00_ff_00);
