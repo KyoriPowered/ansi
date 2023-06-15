@@ -19,10 +19,10 @@ dependencies {
 spotless {
   ratchetFrom 'origin/trunk'
   java {
-  endWithNewline()
-  indentWithSpaces 2
-  importOrderFile rootProject.file('.spotless/kyori.importorder')
-  trimTrailingWhitespace()
+    endWithNewline()
+    indentWithSpaces 2
+    importOrderFile rootProject.file('.spotless/kyori.importorder')
+    trimTrailingWhitespace()
   }
 }
 
@@ -67,6 +67,7 @@ indra {
     testWith(11, 17, 20)
   }
 
+  signWithKeyFromPrefixedProperties("kyori")
   configurePublications {
     pom {
       developers {
