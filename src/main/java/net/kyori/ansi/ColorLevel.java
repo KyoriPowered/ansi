@@ -199,9 +199,11 @@ public enum ColorLevel {
       return ColorLevel.TRUE_COLOR;
     } else if (TERM != null && TERM.contains("256color")) {
       return ColorLevel.INDEXED_256;
+    } else if (TERM == null) {
+      return ColorLevel.NONE; // This isn't a terminal at all
     }
 
-    // Fallback
+    // Fallback, unknown type of terminal
     return ColorLevel.INDEXED_16;
   }
 
