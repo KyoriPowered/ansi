@@ -27,10 +27,26 @@ import org.fusesource.jansi.AnsiColors;
 import org.fusesource.jansi.AnsiConsole;
 
 final class JAnsiColorLevel {
+  private static final Throwable UNAVAILABILITY_CAUSE;
+
+  static {
+    Throwable cause = null;
+    try {
+      Class.forName("org.fusesource.jansi.AnsiConsole");
+    } catch (final ClassNotFoundException classNotFoundException) {
+      cause = classNotFoundException;
+    }
+    UNAVAILABILITY_CAUSE = cause;
+  }
+
   private JAnsiColorLevel() {
   }
 
-  public static ColorLevel computeFromJAnsi() {
+  static boolean isAvailable() {
+    return UNAVAILABILITY_CAUSE == null;
+  }
+
+  static ColorLevel computeFromJAnsi() {
     final AnsiColors colors = AnsiConsole.out().getColors();
     if (colors == null) return ColorLevel.NONE;
     switch (colors) {

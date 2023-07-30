@@ -191,12 +191,8 @@ public enum ColorLevel {
       // In other cases, fall through below to the environment variable based check
     }
 
-    if (System.console() != null) {
-      try {
-        Class.forName("org.fusesource.jansi.AnsiConsole");
-        return JAnsiColorLevel.computeFromJAnsi();
-      } catch (final ClassNotFoundException ignored) {
-      }
+    if (System.console() != null && JAnsiColorLevel.isAvailable()) {
+      return JAnsiColorLevel.computeFromJAnsi();
     }
 
     // TODO
