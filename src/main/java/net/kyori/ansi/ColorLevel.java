@@ -195,7 +195,7 @@ public enum ColorLevel {
       try {
         Class.forName("org.fusesource.jansi.AnsiConsole");
         return JAnsiColorLevel.computeFromJAnsi();
-      } catch (ClassNotFoundException ignored) {
+      } catch (final ClassNotFoundException ignored) {
       }
     }
 

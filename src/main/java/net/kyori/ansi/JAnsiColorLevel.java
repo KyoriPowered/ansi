@@ -26,9 +26,12 @@ package net.kyori.ansi;
 import org.fusesource.jansi.AnsiColors;
 import org.fusesource.jansi.AnsiConsole;
 
-public class JAnsiColorLevel {
+final class JAnsiColorLevel {
+  private JAnsiColorLevel() {
+  }
+
   public static ColorLevel computeFromJAnsi() {
-    AnsiColors colors = AnsiConsole.out().getColors();
+    final AnsiColors colors = AnsiConsole.out().getColors();
     if (colors == null) return ColorLevel.NONE;
     switch (colors) {
       case Colors16:
