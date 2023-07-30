@@ -160,6 +160,7 @@ public enum ColorLevel {
 
   private static final String COLORTERM = System.getenv("COLORTERM");
   private static final String TERM = System.getenv("TERM");
+  private static final String WT_SESSION = System.getenv("WT_SESSION");
   private static int[] indexed256ColorTable = null;
 
   /**
@@ -191,10 +192,6 @@ public enum ColorLevel {
       // In other cases, fall through below to the environment variable based check
     }
 
-    if (System.console() != null && JAnsiColorLevel.isAvailable()) {
-      return JAnsiColorLevel.computeFromJAnsi();
-    }
-
     // TODO
     // https://github.com/termstandard/colors
     if (COLORTERM != null && (COLORTERM.equals("truecolor") || COLORTERM.equals("24bit"))) {
@@ -204,7 +201,13 @@ public enum ColorLevel {
     } else if (TERM != null && TERM.contains("256color")) {
       return ColorLevel.INDEXED_256;
     } else if (TERM == null) {
-      return ColorLevel.NONE; // This isn't a terminal at all
+      if (WT_SESSION != null) {
+        return ColorLevel.TRUE_COLOR; // Windows Terminal
+      } else if (System.console() != null && JAnsiColorLevel.isAvailable()) {
+        return JAnsiColorLevel.computeFromJAnsi();
+      } else {
+        return ColorLevel.NONE; // This isn't a terminal at all
+      }
     }
 
     // Fallback, unknown type of terminal
