@@ -191,6 +191,14 @@ public enum ColorLevel {
       // In other cases, fall through below to the environment variable based check
     }
 
+    if (System.console() != null) {
+      try {
+        Class.forName("org.fusesource.jansi.AnsiConsole");
+        return JAnsiColorLevel.computeFromJAnsi();
+      } catch (ClassNotFoundException ignored) {
+      }
+    }
+
     // TODO
     // https://github.com/termstandard/colors
     if (COLORTERM != null && (COLORTERM.equals("truecolor") || COLORTERM.equals("24bit"))) {

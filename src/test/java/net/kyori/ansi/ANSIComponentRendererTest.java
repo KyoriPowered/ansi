@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class ANSIComponentRendererTest {
   @Test
@@ -154,6 +155,11 @@ class ANSIComponentRendererTest {
 
     System.setProperty(ColorLevel.COLOR_LEVEL_PROPERTY, "truecolor");
     assertEquals(ColorLevel.compute(), ColorLevel.TRUE_COLOR);
+  }
+
+  @Test
+  void testComputeActuallyRuns() {
+    assertNotEquals(ColorLevel.compute(), null);
   }
 
   private String render(final Consumer<ANSIComponentRenderer<TestStyle>> action) {
