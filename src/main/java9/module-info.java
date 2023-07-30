@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2021-2022 KyoriPowered
+ * Copyright (c) 2021-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,5 +29,6 @@
  */
 module net.kyori.ansi {
   exports net.kyori.ansi;
+  requires static org.fusesource.jansi;
   requires static transitive org.jetbrains.annotations;
 }
