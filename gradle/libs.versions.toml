@@ -12,6 +12,7 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 stylecheck = { module = "ca.stellardrift:stylecheck", version = "0.2.1" }
+jansi = { module = "org.fusesource.jansi:jansi", version = "2.4.0" }
 
 # unused, for renovate
 zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }

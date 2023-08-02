@@ -14,6 +14,7 @@ dependencies {
   testImplementation libs.junit.api
   testRuntimeOnly libs.junit.engine
   checkstyle libs.stylecheck
+  compileOnly libs.jansi
 }
 
 spotless {
