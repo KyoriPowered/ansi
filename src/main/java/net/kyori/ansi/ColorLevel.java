@@ -139,19 +139,18 @@ public enum ColorLevel {
   INDEXED_16 {
     @Override
     public @NotNull String determineEscape(final int rgbColor) {
-      float matchedDistance = Float.MAX_VALUE;
-      StandardColor match = StandardColor.BLACK;
-      for (final StandardColor potential : StandardColor.VALUES) {
-        final float distance = HSV.fromRGB(rgbColor).distance(HSV.fromRGB(potential.color));
-        if (distance < matchedDistance) {
-          match = potential;
-          matchedDistance = distance;
-        }
-        if (distance == 0) {
-          break; // same colour! whoo!
-        }
-      }
-      return match.index;
+      return findClosestColorEscape(rgbColor, StandardColor.VALUES_INDEXED16);
+    }
+  },
+  /**
+   * 8 color.
+   *
+   * @since 1.0.4
+   */
+  INDEXED_8 {
+    @Override
+    public @NotNull String determineEscape(final int rgbColor) {
+      return findClosestColorEscape(rgbColor, StandardColor.VALUES_INDEXED8);
     }
   };
 
@@ -179,6 +178,7 @@ public enum ColorLevel {
         case "truecolor": return ColorLevel.TRUE_COLOR;
         case "indexed256": return ColorLevel.INDEXED_256;
         case "indexed16": return ColorLevel.INDEXED_16;
+        case "indexed8": return ColorLevel.INDEXED_8;
         // In other cases, fall through below
       }
     }
@@ -225,6 +225,22 @@ public enum ColorLevel {
    */
   public abstract @NotNull String determineEscape(final int rgbColor);
 
+  private static String findClosestColorEscape(final int rgbColor, StandardColor[] potentialColors) {
+    float matchedDistance = Float.MAX_VALUE;
+    StandardColor match = StandardColor.BLACK;
+    for (final StandardColor potential : potentialColors) {
+      final float distance = HSV.fromRGB(rgbColor).distance(HSV.fromRGB(potential.color));
+      if (distance < matchedDistance) {
+        match = potential;
+        matchedDistance = distance;
+      }
+      if (distance == 0) {
+        break; // same colour! whoo!
+      }
+    }
+    return match.index;
+  }
+
   private enum StandardColor {
     BLACK(0x00_00_00, "30"),
     DARK_RED(0xaa_00_00, "31"),
@@ -243,7 +259,8 @@ public enum ColorLevel {
     AQUA(0x55_ff_ff, "96"),
     WHITE(0xff_ff_ff, "97");
 
-    static final StandardColor[] VALUES;
+    static final StandardColor[] VALUES_INDEXED16;
+    static final StandardColor[] VALUES_INDEXED8;
 
     final int color;
     final String index;
@@ -254,7 +271,11 @@ public enum ColorLevel {
     }
 
     static {
-      VALUES = StandardColor.values();
+      VALUES_INDEXED16 = StandardColor.values();
+
+      StandardColor[] indexed8 = new StandardColor[8];
+      System.arraycopy(StandardColor.values(), 0, indexed8, 0, 8);
+      VALUES_INDEXED8 = indexed8;
     }
   }
 
