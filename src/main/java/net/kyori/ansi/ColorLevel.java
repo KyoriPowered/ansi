@@ -225,7 +225,7 @@ public enum ColorLevel {
    */
   public abstract @NotNull String determineEscape(final int rgbColor);
 
-  private static String findClosestColorEscape(final int rgbColor, StandardColor[] potentialColors) {
+  private static String findClosestColorEscape(final int rgbColor, final StandardColor[] potentialColors) {
     float matchedDistance = Float.MAX_VALUE;
     StandardColor match = StandardColor.BLACK;
     for (final StandardColor potential : potentialColors) {
@@ -273,7 +273,7 @@ public enum ColorLevel {
     static {
       VALUES_INDEXED16 = StandardColor.values();
 
-      StandardColor[] indexed8 = new StandardColor[8];
+      final StandardColor[] indexed8 = new StandardColor[8];
       System.arraycopy(StandardColor.values(), 0, indexed8, 0, 8);
       VALUES_INDEXED8 = indexed8;
     }
