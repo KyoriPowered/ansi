@@ -145,7 +145,7 @@ public enum ColorLevel {
   /**
    * 8 color.
    *
-   * @since 1.0.4
+   * @since 1.1.0
    */
   INDEXED_8 {
     @Override
