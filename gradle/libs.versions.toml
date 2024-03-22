@@ -24,5 +24,5 @@ indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 indra-crossdoc = { id = "net.kyori.indra.crossdoc", version.ref = "indra" }
 indra-licenser-spotless = { id = "net.kyori.indra.licenser.spotless", version.ref = "indra" }
 indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
-nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0-rc-1" }
-spotless = "com.diffplug.spotless:6.21.0"
+nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0-rc-2" }
+spotless = "com.diffplug.spotless:6.25.0"
