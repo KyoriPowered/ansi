@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2021-2023 KyoriPowered
+ * Copyright (c) 2021-2024 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -194,20 +194,25 @@ public enum ColorLevel {
 
     // TODO
     // https://github.com/termstandard/colors
-    if (COLORTERM != null && (COLORTERM.equals("truecolor") || COLORTERM.equals("24bit"))) {
-      return ColorLevel.TRUE_COLOR;
-    } else if (TERM != null && TERM.contains("truecolor")) {
-      return ColorLevel.TRUE_COLOR;
-    } else if (TERM != null && TERM.contains("256color")) {
-      return ColorLevel.INDEXED_256;
-    } else if (TERM == null) {
-      if (WT_SESSION != null) {
-        return ColorLevel.TRUE_COLOR; // Windows Terminal
-      } else if (System.console() != null && JAnsiColorLevel.isAvailable()) {
-        return JAnsiColorLevel.computeFromJAnsi();
-      } else {
-        return ColorLevel.NONE; // This isn't a terminal at all
+    if (COLORTERM != null) {
+      if (COLORTERM.contains("truecolor") || COLORTERM.contains("24bit")) {
+        return ColorLevel.TRUE_COLOR;
       }
+    } else if (TERM != null) {
+      if (TERM.contains("truecolor") || TERM.contains("-direct")) {
+        return ColorLevel.TRUE_COLOR;
+      } else if (TERM.contains("-256color")) {
+        return ColorLevel.INDEXED_256;
+      }
+    } else if (WT_SESSION != null) {
+      return ColorLevel.TRUE_COLOR; // Windows Terminal
+    } else if (System.console() != null) {
+      if (JAnsiColorLevel.isAvailable()) {
+        return JAnsiColorLevel.computeFromJAnsi();
+      }
+      return ColorLevel.INDEXED_16; // we have to assume that every interactive terminal supports at least 16 colors
+    } else {
+      return ColorLevel.NONE; // This isn't a terminal at all
     }
 
     // Fallback, unknown type of terminal
