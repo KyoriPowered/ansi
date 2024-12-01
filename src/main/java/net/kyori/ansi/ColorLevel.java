@@ -206,7 +206,7 @@ public enum ColorLevel {
       }
     } else if (WT_SESSION != null) {
       return ColorLevel.TRUE_COLOR; // Windows Terminal
-    } else if (System.console() != null) {
+    } else if (SystemConsole.isTerminal()) {
       if (JAnsiColorLevel.isAvailable()) {
         return JAnsiColorLevel.computeFromJAnsi();
       }

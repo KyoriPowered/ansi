@@ -3,4 +3,5 @@
 <suppressions>
   <!-- no javadoc on test classes -->
   <suppress files="src[\\/](test|jmh)[\\/]java[\\/].*" checks="(FilteringWriteTag|JavadocPackage|MissingJavadoc.*)"/>
+  <suppress files="src[\\/](test|jmh|main)[\\/]java[\d]+[\\/].*" checks="JavadocPackage"/>
 </suppressions>
