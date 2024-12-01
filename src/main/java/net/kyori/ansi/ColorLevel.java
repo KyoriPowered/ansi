@@ -24,6 +24,8 @@
 package net.kyori.ansi;
 
 import java.util.Locale;
+
+import jdk.internal.org.jline.utils.OSUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -159,7 +161,6 @@ public enum ColorLevel {
 
   private static final String COLORTERM = System.getenv("COLORTERM");
   private static final String TERM = System.getenv("TERM");
-  private static final String WT_SESSION = System.getenv("WT_SESSION");
   private static int[] indexed256ColorTable = null;
 
   /**
@@ -204,8 +205,8 @@ public enum ColorLevel {
       } else if (TERM.contains("-256color")) {
         return ColorLevel.INDEXED_256;
       }
-    } else if (WT_SESSION != null) {
-      return ColorLevel.TRUE_COLOR; // Windows Terminal
+    } else if (OSUtils.IS_WINDOWS) {
+      return ColorLevel.TRUE_COLOR; // We can assume that Windows always supports true color
     } else if (System.console() != null) {
       if (JAnsiColorLevel.isAvailable()) {
         return JAnsiColorLevel.computeFromJAnsi();
