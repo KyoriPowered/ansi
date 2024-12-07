@@ -23,7 +23,6 @@
  */
 package net.kyori.ansi;
 
-// multi-release stub, see J22 version
 final class SystemConsole {
   private SystemConsole() {
   }
