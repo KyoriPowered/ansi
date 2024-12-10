@@ -48,7 +48,7 @@ eclipse {
 sourceSets {
   main {
     multirelease {
-      alternateVersions(9)
+      alternateVersions(9, 22)
       moduleName "net.kyori.ansi"
       requireAllPackagesExported()
     }
