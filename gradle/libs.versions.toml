@@ -14,7 +14,7 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 stylecheck = { module = "ca.stellardrift:stylecheck", version = "0.2.1" }
 jansi = { module = "org.fusesource.jansi:jansi", version = "2.4.1" }
-spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0-no-1837-SNAPSHOT" }
+spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0-no-1838-SNAPSHOT" }
 
 # unused, for renovate
 zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
