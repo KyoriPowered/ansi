@@ -18,7 +18,7 @@ jobs:
         run: |
           CONF=$(GIT_EDITOR=echo git config --system --edit)
           echo "Config is $CONF"
-          cat $CONF
+          cat "$CONF"
   call-build:
     uses: KyoriPowered/.github/.github/workflows/shared-ci.yaml@trunk
     secrets: inherit
