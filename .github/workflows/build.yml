@@ -11,6 +11,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: KyoriPowered/.github/.github/actions/setup-java-env@trunk
+        with:
+          runtime_version: 17
+          publishing_branch_regex: "trunk"
       - shell: bash
         run: |
           CONF=$(GIT_EDITOR=echo git config --system --edit)
