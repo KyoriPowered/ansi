@@ -23,8 +23,8 @@
  */
 package net.kyori.ansi;
 
-import org.fusesource.jansi.AnsiColors;
-import org.fusesource.jansi.AnsiConsole;
+import org.jline.jansi.AnsiColors;
+import org.jline.jansi.AnsiConsole;
 
 final class JAnsiColorLevel {
   private static final Throwable UNAVAILABILITY_CAUSE;
@@ -32,8 +32,8 @@ final class JAnsiColorLevel {
   static {
     Throwable cause = null;
     try {
-      Class.forName("org.fusesource.jansi.AnsiConsole");
-      Class.forName("org.fusesource.jansi.AnsiColors");
+      Class.forName("org.jline.jansi.AnsiConsole");
+      Class.forName("org.jline.jansi.AnsiColors");
     } catch (final ClassNotFoundException classNotFoundException) {
       cause = classNotFoundException;
     }
