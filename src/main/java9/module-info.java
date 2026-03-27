@@ -29,6 +29,6 @@
  */
 module net.kyori.ansi {
   exports net.kyori.ansi;
-  requires static org.fusesource.jansi;
+  requires static org.jline.jansi;
   requires static transitive org.jetbrains.annotations;
 }
