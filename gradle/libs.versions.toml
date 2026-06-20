@@ -14,6 +14,7 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 stylecheck = { module = "ca.stellardrift:stylecheck", version = "0.2.1" }
 jansi = { module = "org.fusesource.jansi:jansi", version = "2.4.1" }
+spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "7.0.5-stellardrift-SNAPSHOT" }
 
 # unused, for renovate
 zCheckstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
@@ -25,4 +26,3 @@ indra-crossdoc = { id = "net.kyori.indra.crossdoc", version.ref = "indra" }
 indra-licenser-spotless = { id = "net.kyori.indra.licenser.spotless", version.ref = "indra" }
 indra-publishing-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0-rc-1" }
-spotless = "com.diffplug.spotless:6.21.0"
