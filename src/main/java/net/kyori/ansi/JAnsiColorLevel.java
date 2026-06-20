@@ -1,7 +1,7 @@
 /*
  * This file is part of ansi, licensed under the MIT License.
  *
- * Copyright (c) 2023-2024 KyoriPowered
+ * Copyright (c) 2023-2026 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,24 +27,25 @@ import org.fusesource.jansi.AnsiColors;
 import org.fusesource.jansi.AnsiConsole;
 
 final class JAnsiColorLevel {
-  private static final Throwable UNAVAILABILITY_CAUSE;
+  private static final boolean AVAILABLE;
 
   static {
-    Throwable cause = null;
+    boolean available;
     try {
       Class.forName("org.fusesource.jansi.AnsiConsole");
       Class.forName("org.fusesource.jansi.AnsiColors");
+      available = true;
     } catch (final ClassNotFoundException classNotFoundException) {
-      cause = classNotFoundException;
+      available = false;
     }
-    UNAVAILABILITY_CAUSE = cause;
+    AVAILABLE = available;
   }
 
   private JAnsiColorLevel() {
   }
 
   static boolean isAvailable() {
-    return UNAVAILABILITY_CAUSE == null;
+    return AVAILABLE;
   }
 
   static ColorLevel computeFromJAnsi() {
